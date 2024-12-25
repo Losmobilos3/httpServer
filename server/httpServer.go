@@ -105,6 +105,18 @@ func mapStringToRequestType(str string) int {
 		return POST
 	case "PUT":
 		return PUT
+	case "DELETE":
+		return DELETE
+	case "HEAD":
+		return HEAD
+	case "CONNECT":
+		return CONNECT
+	case "OPTIONS":
+		return OPTIONS
+	case "TRACE":
+		return TRACE
+	case "PATCH":
+		return PATCH
 	}
 	return -1
 }
