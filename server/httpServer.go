@@ -47,7 +47,7 @@ func AddHandler(server httpServer, endpoint string, function func(net.Conn) stri
 }
 
 func StartServer(server httpServer) {
-	fmt.Println("👌 Started http-server.")
+	fmt.Println("✅ Started http-server.")
 	for {
 		conn, err := server.listener.Accept()
 		if err != nil {
@@ -66,7 +66,7 @@ func handleRequest(server httpServer, conn net.Conn) {
 
 	n, err := conn.Read(msg)
 	if err != nil || n == 0 {
-		fmt.Println("Connection closed or no data received.")
+		fmt.Println("❌ Connection closed or no data received.")
 		return
 	}
 
@@ -77,7 +77,7 @@ func handleRequest(server httpServer, conn net.Conn) {
 	handler, ok := server.handlers[endpoint]
 
 	if !ok {
-		fmt.Println("Someone tried requesting the following endpoint, which is not defined:", endpoint)
+		fmt.Println("❌ Someone tried requesting the following endpoint, which is not defined:", endpoint)
 		return
 	}
 
