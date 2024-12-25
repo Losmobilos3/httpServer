@@ -12,14 +12,14 @@ var maxRequestSize int = 8196 // bytes
 // Request types
 const (
 	GET     int = 0
-	POST        = 1
-	PUT         = 2
-	DELETE      = 3
-	HEAD        = 4
-	CONNECT     = 5
-	OPTIONS     = 6
-	TRACE       = 7
-	PATCH       = 8
+	POST    int = 1
+	PUT     int = 2
+	DELETE  int = 3
+	HEAD    int = 4
+	CONNECT int = 5
+	OPTIONS int = 6
+	TRACE   int = 7
+	PATCH   int = 8
 )
 
 type httpServer struct {
@@ -30,10 +30,9 @@ type httpServer struct {
 }
 
 func CreateServer(address string, port int) httpServer {
-	listener, err := net.Listen(
-		"tcp",
-		"localhost:80",
-	)
+	ipAndPort := address + ":" + fmt.Sprint(port)
+
+	listener, err := net.Listen("tcp", ipAndPort)
 	if err != nil {
 		fmt.Println(err)
 	}
