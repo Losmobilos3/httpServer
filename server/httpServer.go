@@ -65,7 +65,11 @@ func StartServer(server httpServer) {
 func handleRequest(server httpServer, conn net.Conn) {
 	msg := make([]byte, maxRequestSize)
 
-	conn.Read(msg)
+	n, err := conn.Read(msg)
+	if err != nil || n == 0 {
+		fmt.Println("Connection closed or no data received.")
+		return
+	}
 
 	httpStr := string(msg[:])
 
