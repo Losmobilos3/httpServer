@@ -26,10 +26,10 @@ type httpServer struct {
 	address  string
 	port     int
 	listener net.Listener
-	handlers map[string]func(net.Conn)
+	handlers map[string](func(net.Conn) string)
 }
 
-func createServer(address string, port int) httpServer {
+func CreateServer(address string, port int) httpServer {
 	listener, err := net.Listen(
 		"tcp",
 		"localhost:80",
@@ -38,16 +38,17 @@ func createServer(address string, port int) httpServer {
 		fmt.Println(err)
 	}
 
-	handlerMap := map[string]func(net.Conn){}
+	handlerMap := map[string](func(net.Conn) string){}
 
 	return httpServer{address: address, port: port, listener: listener, handlers: handlerMap}
 }
 
-func addHandler(server httpServer, endpoint string, function func(net.Conn)) {
+func AddHandler(server httpServer, endpoint string, function func(net.Conn) string) {
 	server.handlers[endpoint] = function
 }
 
-func startServer(server httpServer) {
+func StartServer(server httpServer) {
+	fmt.Println("👌 Started http-server.")
 	for {
 		conn, err := server.listener.Accept()
 		if err != nil {
@@ -55,6 +56,8 @@ func startServer(server httpServer) {
 		}
 
 		handleRequest(server, conn)
+
+		conn.Close()
 	}
 
 }
@@ -68,9 +71,18 @@ func handleRequest(server httpServer, conn net.Conn) {
 
 	_, endpoint := getEndpointInformation(httpStr)
 
-	handler := server.handlers[endpoint]
+	handler, ok := server.handlers[endpoint]
 
-	handler(conn)
+	if !ok {
+		fmt.Println("Someone tried requesting the following endpoint, which is not defined:", endpoint)
+		return
+	}
+
+	responseStr := handler(conn)
+
+	responseBytes := []byte(responseStr)
+
+	conn.Write(responseBytes)
 }
 
 func getEndpointInformation(httpStr string) (int, string) {
